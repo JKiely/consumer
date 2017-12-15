@@ -1,0 +1,21 @@
+version: '3'
+services:
+  server:
+    build: ./nginx
+    ports:
+      - "4000:80"
+    volumes:
+      - /www/static/
+    links:
+      - consumer:consumer
+  database:
+    build: ./postgres
+  consumer:
+    build: .
+    command: python ./consumer/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/consumer
+    depends_on:
+      - database
+    ports:
+      - "4000"
